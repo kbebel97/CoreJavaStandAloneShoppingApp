@@ -7,8 +7,8 @@ import java.util.List;
 public class Order implements Serializable{
 	
     private static final long serialVersionUID = 4L;     
-	public static Long orderIdincrement = 0L;
-	private Long orderId = 0L;
+	static Long orderIdincrement = 0L;
+	private Long orderId = null;
 	
 	private LocalDateTime purchaseDate = null;
 	private Item item = null;

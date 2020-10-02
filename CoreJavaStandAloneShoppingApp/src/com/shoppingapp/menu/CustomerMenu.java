@@ -151,8 +151,9 @@ public class CustomerMenu {
 			else {
 				for(int i = 0; i < customer.getPurchases().size() ; i++) {
 					Order order = customer.getPurchases().get(i);
+					int j = i + 1;
 					System.out.println("---------------------------------------------------------------------------------------------");
-					System.out.println("OrderID: " + order.getOrderId() + "||" + " Date: " + order.getPurchaseDate() + "||" + " Item " + order.getItem().getItemName());
+					System.out.println("OrderID: " + j + "||" + " Date: " + order.getPurchaseDate() + "||" + " Item " + order.getItem().getItemName());
 					System.out.println("---------------------------------------------------------------------------------------------");
 				}		
 			}
@@ -174,14 +175,14 @@ public class CustomerMenu {
 //						System.out.println("---------------------------------------------------------------------------------------------");
 //					}
 //				}
-				System.out.println("Return Item by name or orderId or type 'quit'");
-				String product = sc.next();
-				if(product.equals("quit")) {
+//				String product = sc.next();
+//				if(product.equals("quit")) {
 //					quit = true;
-					break;
-				}
-				if(CustomerFunctions.verifyProduct(product, customer))
+//					break;
+//				}
+				if(CustomerFunctions.verifyProduct(customer)) 
 					continue;
+				else break;
 //			}
 //			if(quit==true) {
 //				break;

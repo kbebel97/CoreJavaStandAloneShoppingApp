@@ -11,60 +11,83 @@ import com.shoppingapp.model.Order;
 public class CustomerFunctions {
 	private static Scanner sc = new Scanner(System.in);
 	
-	public static boolean verifyProduct(String product, Customer customer) {
-		Long Id = null;
-		try{
-			Id = Long.valueOf(product);
-			for(int k = 0; k < customer.getPurchases().size();k++) {
-				if(customer.getPurchases().get(k).getOrderId()==Id) {
-					Duration duration = Duration.between(customer.getPurchases().get(k).getPurchaseDate(), LocalDateTime.now());
+	public static boolean verifyProduct(Customer customer) {
+		Integer Id = null;
+		boolean loop = false;
+		while(!loop) {
+			System.out.println("Return Item by name or orderId or type 'quit'");
+			String option = sc.next();
+			if(option.equals("quit")) {
+				break;
+			}				
+			try{
+				Id = Integer.valueOf(option);
+				if(Id > customer.getPurchases().size() || Id < 1) {
+					System.out.println("Invalid ItemId!");
+					continue;
+				}
+				else {
+					Duration duration = Duration.between(customer.getPurchases().get(Id-1).getPurchaseDate(), LocalDateTime.now());
 					if(duration.toDays()>15) {
-						System.out.println("Sorry, " + customer.getPurchases().get(k).getItem().getItemName() + " cannot be returned");
+						System.out.println("Sorry, " + customer.getPurchases().get(Id - 1).getItem().getItemName() + " cannot be returned");
 						System.out.println("Items can only be returned within 15 days of purchase");
-						return false;
+						continue;
 					}
 					else {
 						System.out.println("Item has successfully been returned");
-						customer.getPurchases().remove(customer.getPurchases().get(k));
+						customer.getPurchases().remove(customer.getPurchases().get(Id-1));
 						try {
 							GeneralFunctions.fileWriterCustomer(Customer.getCustomers());
 						}
 						catch(IOException e) {
 							e.printStackTrace();
 						}
-						return true;
+						loop = true;
+						break;
 					}
-				}
-			}
-		}
-		catch(NumberFormatException e) {
-			
-		}
-			for(int i = 0; i < customer.getPurchases().size(); i++) {
-				if(customer.getPurchases().get(i).getItem().getItemName().equals(product)) {
-					Duration duration = Duration.between(customer.getPurchases().get(i).getPurchaseDate(), LocalDateTime.now());
-					if(duration.toDays()>15) {
-						System.out.println("Sorry, " + customer.getPurchases().get(i).getItem().getItemName() + " cannot be returned");
-						System.out.println("Items can only be returned within 15 days of purchase");
-						return false;
-					}
-					else {
-						System.out.println("Item has successfully been returned");
-						customer.getPurchases().remove(customer.getPurchases().get(i));
-						try {
-							GeneralFunctions.fileWriterCustomer(Customer.getCustomers());
-						}
-						catch(IOException e) {
-							e.printStackTrace();
-						}
-						return true;
-					}
-				}
+				
+				}	
+	
 				
 			}
-		
-		System.out.println("Item was not found");
-		return false;
+			catch(NumberFormatException e) {
+				boolean found = false;
+				for(int i = 0; i < customer.getPurchases().size(); i++) {
+					if(customer.getPurchases().get(i).getItem().getItemName().equals(option)) {
+						Duration duration = Duration.between(customer.getPurchases().get(i).getPurchaseDate(), LocalDateTime.now());
+						if(duration.toDays()>15) {
+							System.out.println("Sorry, " + customer.getPurchases().get(i).getItem().getItemName() + " cannot be returned");
+							System.out.println("Items can only be returned within 15 days of purchase");
+							found = true;
+							continue;
+						}
+						else {
+							System.out.println("Item has successfully been returned");
+							customer.getPurchases().remove(customer.getPurchases().get(i));
+							loop = true;
+							try {
+								GeneralFunctions.fileWriterCustomer(Customer.getCustomers());
+							}
+							catch(IOException a) {
+								a.printStackTrace();
+							}
+							found = true;
+							break;
+						}
+					}
+				}
+				if(found!=true) {
+					System.out.println("Invalid Item Name!");
+					continue;
+				}
+			
+				
+			}		
+
+			
+		}
+		return loop;
+	
 	}
 	
 	
